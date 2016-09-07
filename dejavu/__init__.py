@@ -5,7 +5,7 @@ import multiprocessing
 import os
 import traceback
 import sys
-
+import operator
 
 class Dejavu(object):
 
@@ -128,14 +128,24 @@ class Dejavu(object):
         largest = 0
         largest_count = 0
         song_id = -1
+	old_song_id = -1
+	song_to_diff = {}
         for tup in matches:
             sid, diff = tup
+
+
+	    if sid not in song_to_diff:
+		song_to_diff[sid] = 0
+
             if diff not in diff_counter:
                 diff_counter[diff] = {}
             if sid not in diff_counter[diff]:
                 diff_counter[diff][sid] = 0
             diff_counter[diff][sid] += 1
 
+	    if diff_counter[diff][sid] > song_to_diff[sid]:
+		song_to_diff[sid] = diff_counter[diff][sid]
+            
             if diff_counter[diff][sid] > largest_count:
                 largest = diff
                 largest_count = diff_counter[diff][sid]
@@ -148,6 +158,12 @@ class Dejavu(object):
             songname = song.get(Dejavu.SONG_NAME, None)
         else:
             return None
+        sorted_by_confidence = sorted(song_to_diff.items() , key=operator.itemgetter(1))
+	print "<<< SORTED: " + str(sorted_by_confidence)
+	second_song_id = sorted_by_confidence[len(sorted_by_confidence) - 2][0]
+        second_song = self.db.get_song_by_id(second_song_id)
+        second_songname = song.get(Dejavu.SONG_NAME, None)
+	second_song_confidence = song_to_diff[second_song_id]
 
         # return match info
         nseconds = round(float(largest) / fingerprint.DEFAULT_FS *
@@ -157,10 +173,17 @@ class Dejavu(object):
             Dejavu.SONG_ID : song_id,
             Dejavu.SONG_NAME : songname,
             Dejavu.CONFIDENCE : largest_count,
-            Dejavu.OFFSET : int(largest),
-            Dejavu.OFFSET_SECS : nseconds,
-            Database.FIELD_FILE_SHA1 : song.get(Database.FIELD_FILE_SHA1, None),}
-        return song
+            Database.FIELD_FILE_SHA1 : song.get(Database.FIELD_FILE_SHA1, None)}
+        second_song = {
+            Dejavu.SONG_ID : second_song_id,
+            Dejavu.SONG_NAME : second_songname,
+            Dejavu.CONFIDENCE : second_song_confidence,
+            Database.FIELD_FILE_SHA1 : second_song.get(Database.FIELD_FILE_SHA1, None)}
+	song_list = []
+	song_list.append(song)
+	song_list.append(second_song)
+	print song_to_diff
+        return song_list
 
     def recognize(self, recognizer, *options, **kwoptions):
         r = recognizer(self)

@@ -18,8 +18,8 @@ if __name__ == '__main__':
 	djv.fingerprint_directory("mp3", [".mp3"])
 
 	# Recognize audio from a file
-	# song = djv.recognize(FileRecognizer, "/Users/timnguyen/Downloads/songstestrecord/falling-for-you-record.mp3")
-	# print "From file we recognized: %s\n" % song
+	song = djv.recognize(FileRecognizer, "/Users/timnguyen/Downloads/songstestrecord/destroy-something-record.mp3")
+	print "From file we recognized: %s\n" % song
 
 	# Or recognize audio from your microphone for `secs` seconds
 	# secs = 2
@@ -35,4 +35,3 @@ if __name__ == '__main__':
 	# print "No shortcut, we recognized: %s\n" % song
 
 
-	print djv.db.get_songs()[0]
