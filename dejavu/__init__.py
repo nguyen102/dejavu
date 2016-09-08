@@ -179,20 +179,6 @@ class Dejavu(object):
         nseconds = round(float(largest) / fingerprint.DEFAULT_FS *
                          fingerprint.DEFAULT_WINDOW_SIZE *
                          fingerprint.DEFAULT_OVERLAP_RATIO, 5)
-        # song = {
-            # Dejavu.SONG_ID : song_id,
-            # Dejavu.SONG_NAME : songname,
-            # Dejavu.CONFIDENCE : largest_count,
-            # Database.FIELD_FILE_SHA1 : song.get(Database.FIELD_FILE_SHA1, None)}
-        # second_song = {
-            # Dejavu.SONG_ID : second_song_id,
-            # Dejavu.SONG_NAME : second_songname,
-            # Dejavu.CONFIDENCE : second_song_confidence,
-            # Database.FIELD_FILE_SHA1 : second_song.get(Database.FIELD_FILE_SHA1, None)}
-	# song_list = []
-	# song_list.append(song)
-	# song_list.append(second_song)
-	# print song_to_diff
         return song_list
 
     def recognize(self, recognizer, *options, **kwoptions):
