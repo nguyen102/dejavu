@@ -17,6 +17,7 @@ if __name__ == '__main__':
 	# Fingerprint all the mp3's in the directory we give it
 	djv.fingerprint_directory("mp3", [".mp3"])
 
+
 	# Recognize audio from a file
 	song = djv.recognize(FileRecognizer, "/Users/timnguyen/Downloads/songstestrecord/destroy-something-record.mp3")
 	print "From file we recognized: %s\n" % song
